@@ -1,0 +1,18 @@
+@import "tailwindcss";
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background-color: white;
+  color: black;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Ocultar scrollbar en elementos horizontales */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
