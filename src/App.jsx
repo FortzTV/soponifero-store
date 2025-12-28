@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   ShoppingCart, ArrowRight, ShieldCheck, Instagram, Search,
@@ -6,8 +6,16 @@ import {
   ArrowLeft, Users, CheckCircle2, Plane, Award, Star, Activity, Home, Lock, X, CreditCard, Check, MapPin, Package, Trash2, Plus
 } from 'lucide-react';
 
+/**
+ * SOPONIFERO STORE - HUB DE IMPORTACIONES USA v2.0 (LIMA NORTE)
+ * ESTADO: PRODUCCIÓN OPTIMIZADA PARA MAC Y MÓVIL
+ * TOTAL LÍNEAS ESTIMADAS: 530+
+ */
+
 export default function App() {
-  // === 1. ESTADOS DE NAVEGACIÓN Y UX ===
+  // ==========================================
+  // 1. ESTADOS PRINCIPALES DE LA APLICACIÓN
+  // ==========================================
   const [view, setView] = useState('HOME');
   const [product, setProduct] = useState(null);
   const [selectedSize, setSelectedSize] = useState(null);
@@ -16,42 +24,58 @@ export default function App() {
   const [cart, setCart] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [isCartOpen, setIsCartOpen] = useState(false);
+  
+  // DATOS DE CLIENTE PARA WHATSAPP AUTOMÁTICO
+  const [customerData, setCustomerData] = useState({ 
+    nombre: '', 
+    whatsapp: '', 
+    dni: '', 
+    direccion: 'LIMA NORTE' 
+  });
 
-  // === 2. CAPTURA DE DATOS PARA IMPORTACIÓN (USA HUB) ===
-  const [customerData, setCustomerData] = useState({ nombre: '', whatsapp: '', direccion: '', dni: '' });
-
-  // === 3. HERO SLIDER AUTOMÁTICO (5 IMÁGENES / 5 SEGUNDOS / 60VH) ===
+  // ==========================================
+  // 2. HERO SLIDER (5 IMÁGENES / 5 SEGUNDOS)
+  // ==========================================
   const [currentHeroIndex, setCurrentHeroIndex] = useState(0);
   const heroImages = useMemo(() => [
-    "https://images.unsplash.com/photo-1552346154-21d32810aba3?auto=format&fit=crop&q=80&w=2000",
-    "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?auto=format&fit=crop&q=80&w=2000",
-    "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?auto=format&fit=crop&q=80&w=2000",
-    "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&q=80&w=2000",
-    "https://images.unsplash.com/photo-1584735175315-9d5df23860e6?auto=format&fit=crop&q=80&w=2000"
+    "https://images.unsplash.com/photo-1552346154-21d32810aba3?auto=format&fit=crop&q=80&w=1600",
+    "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?auto=format&fit=crop&q=80&w=1600",
+    "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?auto=format&fit=crop&q=80&w=1600",
+    "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&q=80&w=1600",
+    "https://images.unsplash.com/photo-1584735175315-9d5df23860e6?auto=format&fit=crop&q=80&w=1600"
   ], []);
 
-  // === 4. SISTEMA DE ÓRDENES Y PANEL ADMIN (CLAVE: SOPONIFERO2025) ===
+  // ==========================================
+  // 3. SISTEMA DE GESTIÓN Y RASTREO (ADMIN)
+  // ==========================================
   const [trackingInput, setTrackingInput] = useState('');
   const [trackingResult, setTrackingResult] = useState(null);
   const [adminPass, setAdminPass] = useState('');
   const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(false);
   
+  // ÓRDENES SIMULADAS PARA PANEL DE DUEÑO
   const [orders, setOrders] = useState([
-    { id: "72654321", cliente: "Muestra USIL", whatsapp: "999888777", items: "Samba OG White", total: "429.00", status: "EN VUELO", location: "MIAMI HUB -> LIMA", eta: "30 DIC" }
+    { id: "72654321", cliente: "Demo USIL", whatsapp: "999888777", items: "Samba OG White", total: "429.00", status: "EN LIMA", location: "CENTRO DISTRIBUCIÓN", eta: "MAÑANA" }
   ]);
 
-  // === 5. EFECTOS GLOBALES (PERSISTENCIA Y ANIMACIONES) ===
+  // ==========================================
+  // 4. EFECTOS Y OPTIMIZACIÓN DE RENDIMIENTO
+  // ==========================================
+  
+  // SEGUIMIENTO DE MOUSE (SOLO PC)
   useEffect(() => {
     const handleMouseMove = (e) => setMousePos({ x: e.clientX, y: e.clientY });
     window.addEventListener('mousemove', handleMouseMove);
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, []);
 
+  // NOTIFICACIÓN AUTOMÁTICA DE VENTA
   useEffect(() => {
-    const timer = setTimeout(() => setShowNotification(true), 6000);
+    const timer = setTimeout(() => setShowNotification(true), 8000);
     return () => clearTimeout(timer);
   }, []);
 
+  // INTERVALO DEL SLIDER
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentHeroIndex((prev) => (prev + 1) % heroImages.length);
@@ -59,225 +83,250 @@ export default function App() {
     return () => clearInterval(interval);
   }, [heroImages]);
 
+  // PERSISTENCIA DE DATOS
   useEffect(() => {
-    const sc = localStorage.getItem('soponifero_cart');
     const so = localStorage.getItem('soponifero_orders');
-    if (sc) setCart(JSON.parse(sc));
     if (so) setOrders(JSON.parse(so));
   }, []);
 
   useEffect(() => {
-    localStorage.setItem('soponifero_cart', JSON.stringify(cart));
     localStorage.setItem('soponifero_orders', JSON.stringify(orders));
-  }, [cart, orders]);
+  }, [orders]);
 
-  // === 6. DATA INTEGRA (15 PRODUCTOS CON DESCRIPCIONES LARGAS) ===
+  // ==========================================
+  // 5. CATÁLOGO MAESTRO (20 PRODUCTOS DETALLADOS)
+  // ==========================================
   const productos = useMemo(() => [
     { 
       id: 1, marca: "ADIDAS", nombre: "SAMBA OG WHITE", precio: "429.00", img: "/samba.png", tag: "HYPE", 
-      desc: "Originalmente diseñada para canchas de fútbol sala en los años 50, la Adidas Samba se ha convertido en la silueta definitiva del streetstyle global en 2025. Este par presenta un cuero de grano superior impecable, la mítica puntera T-Toe de gamuza en color gris claro y una suela de caucho color caramelo (gum sole) que ofrece una tracción excepcional y un look retro inigualable. Ideal para combinar con jeans rectos o pantalones de vestir. Producto importado directamente de los mejores retailers de USA.", 
-      detalles: ["Cuero de Grano Superior", "Puntera T-Toe de Gamuza", "Suela de Caucho Natural", "Plantilla OrthoLite®", "Stock Real en Lima"], tallas: ["38", "39", "40", "41", "42"] 
+      desc: "El icono de 1950 reimaginado para el 2025. Cuero de grano superior, puntera de gamuza gris y la clásica suela de caucho caramelo. Importación directa de USA verificada.", 
+      detalles: ["Cuero de Grano", "Suela Gum", "Stock Real"], tallas: ["38", "39", "40", "41", "42"] 
     },
     { 
-      id: 2, marca: "ADIDAS", nombre: "SPONGEBOB FREIZEIT", precio: "529.00", img: "/samba.png", tag: "LIMITADO", 
-      desc: "Una de las colaboraciones más raras y buscadas por coleccionistas. La Adidas Freizeit se reinventa con la estética de Bob Esponja en un colorway 'Black Stealth'. Este modelo destaca por su construcción robusta y materiales sintéticos de alta resistencia que mantienen un brillo sutil bajo la luz. Cuenta con detalles grabados en bajorrelieve y una comodidad superior diseñada para el uso diario intenso. Un 'grail' que no verás repetido en las calles de Lima.", 
-      detalles: ["Material Sintético Premium", "Detalles de Bob Esponja", "Edición Coleccionista", "Acolchado de Doble Densidad"], tallas: ["39", "40", "41"] 
+      id: 2, marca: "ADIDAS", nombre: "SAMBA OG CORE BLACK", precio: "429.00", img: "/samba.png", tag: "BEST", 
+      desc: "Versatilidad total. El colorway negro azabache con las tres rayas blancas. Ideal para cualquier outfit urbano en Lima Norte.", 
+      detalles: ["Cuero Premium", "Suela Oscura", "Resistente"], tallas: ["39", "40", "41", "42"] 
     },
     { 
-      id: 3, marca: "ADIDAS", nombre: "CAMPUS 00S GREY", precio: "449.00", img: "/samba.png", tag: "TREND", 
-      desc: "Inspirada en la era dorada del skate de los años 2000, la Campus 00s lleva la silueta clásica de Adidas a una dimensión mucho más robusta y audaz. Presenta una capellada de gamuza de pelo corto en color gris humo, lengüeta ultra acolchada para mayor soporte y cordones planos extra anchos que definen su carácter 'chunky'. La suela de copa cosida garantiza una durabilidad extrema tanto para el skate como para el uso urbano.", 
-      detalles: ["Gamuza de Pelo Corto", "Lengüeta Acolchada Pro", "Cordones Planos 'Fat Laces'", "Entresuela de EVA"], tallas: ["38", "40", "41", "42"] 
+      id: 3, marca: "ADIDAS", nombre: "CAMPUS 00S GREY", precio: "449.00", img: "/samba.png", tag: "CHUNKY", 
+      desc: "Estética Y2K masiva. Lengüeta ultra acolchada y cordones fat white. La silueta que define el volumen en el streetwear actual.", 
+      detalles: ["Suede Gris", "Fat Laces", "Estilo 2000s"], tallas: ["38", "40", "41", "42"] 
     },
     { 
-      id: 4, marca: "ADIDAS", nombre: "GAZELLE INDOOR BLUE", precio: "419.00", img: "/samba.png", tag: "CLASSIC", 
-      desc: "La Gazelle Indoor nació en los años 70 como una zapatilla de entrenamiento para atletas en interiores, pero rápidamente fue adoptada por la cultura terraza en el Reino Unido. Esta versión destaca por su color azul eléctrico vibrante sobre gamuza de seda y las tres rayas en cuero blanco crema. Lo que la hace única es su suela de caucho traslúcida que se extiende por los laterales, dándole un toque moderno.", 
-      detalles: ["Suede Azul Real", "Suela Traslúcida Envolvente", "Forro Interno Sintético", "Logotipo Trefoil Dorado"], tallas: ["40", "41", "42"] 
+      id: 4, marca: "ADIDAS", nombre: "CAMPUS 00S BLACK", precio: "449.00", img: "/samba.png", tag: "STREET", 
+      desc: "Negro absoluto sobre una construcción robusta. El par más buscado por su durabilidad y estilo imponente.", 
+      detalles: ["Gamuza Premium", "Cordones Blancos", "Look Chunky"], tallas: ["39", "40", "41", "42"] 
     },
     { 
-      id: 5, marca: "ADIDAS", nombre: "YEEZY BOOST 350 ONYX", precio: "999.00", img: "/samba.png", tag: "GRAIL", 
-      desc: "Diseñada por Kanye West, la Yeezy Boost 350 V2 'Onyx' es la definición de comodidad futurista. Construida con una parte superior de Primeknit reingenierizado que se adapta a la forma del pie como una segunda piel, este colorway negro triple ofrece una estética minimalista y poderosa. La mediasuela utiliza la tecnología Boost patentada de Adidas.", 
-      detalles: ["Tecnología Boost de Cuerpo Completo", "Tejido Primeknit Transpirable", "Tira de Talón Reforzada", "Cordones Reflectantes"], tallas: ["41", "42", "43"] 
+      id: 5, marca: "ADIDAS", nombre: "GAZELLE INDOOR BLUE", precio: "419.00", img: "/samba.png", tag: "VINTAGE", 
+      desc: "Gamuza azul real y suela traslúcida envolvente. Un clásico de los 70 que regresa con materiales de lujo.", 
+      detalles: ["Suede Royal", "Suela Gum Traslúcida", "Drop 2025"], tallas: ["40", "41", "42"] 
     },
     { 
-      id: 6, marca: "ADIDAS", nombre: "BAD BUNNY RESPONSE CL", precio: "659.00", img: "/samba.png", tag: "DROP", 
-      desc: "Benito Martínez Ocasio reniega del estilo retro-running con su interpretación de la Response CL. Inspirada en la fluidez del tiempo, esta silueta presenta superposiciones de cuero 'derretido' sobre una base de mesh. Los tonos tierra y el icónico 'ojo' de Bad Bunny en el talón hacen de este par una pieza de arte caminable.", 
-      detalles: ["Superposiciones de Cuero", "Amortiguación Adiprene", "Detalles Bad Bunny", "Mesh Doble Capa"], tallas: ["39", "40", "41", "42"] 
+      id: 6, marca: "ADIDAS", nombre: "GAZELLE INDOOR GREEN", precio: "419.00", img: "/samba.png", tag: "STYLE", 
+      desc: "El colorway 'Collegiate Green' que todos quieren. Contraste perfecto con las tres rayas blancas y suela caramelo.", 
+      detalles: ["Gamuza Verde", "Look Retro", "Importado"], tallas: ["39", "40", "41", "42"] 
     },
     { 
-      id: 7, marca: "ADIDAS", nombre: "SAMBA OG CORE BLACK", precio: "429.00", img: "/samba.png", tag: "STREET", 
-      desc: "La versión invertida del clásico. Cuero negro profundo con las tres rayas en blanco nítido. Mantiene la suela gum que define a la silueta. Es el par más versátil para el uso rudo diario sin perder el estilo de la cultura Terrace europea.", 
-      detalles: ["Cuero Premium Negro", "Suela Gum", "Puntera de Gamuza"], tallas: ["38", "39", "40", "41", "42"] 
+      id: 7, marca: "ADIDAS", nombre: "SPONGEBOB FREIZEIT", precio: "529.00", img: "/samba.png", tag: "RARE", 
+      desc: "Colaboración exclusiva limitada verificada en Miami Hub. Detalles estéticos de Bob Esponja en silueta Freizeit de alta gama.", 
+      detalles: ["Edición Limitada", "Box Especial", "Legit Check"], tallas: ["39", "40", "41"] 
     },
     { 
-      id: 8, marca: "ADIDAS", nombre: "CAMPUS 00S CORE BLACK", precio: "449.00", img: "/samba.png", tag: "BEST", 
-      desc: "Negro absoluto sobre una silueta chunky. Los cordones blancos anchos rompen la monocromía para crear un contraste visual poderoso. Diseñada para durar y para destacar en cualquier escenario urbano de Lima.", 
-      detalles: ["Suede Negro", "Cordones Fat White", "Suela de Goma"], tallas: ["40", "41", "42", "43"] 
+      id: 8, marca: "ADIDAS", nombre: "YEEZY 350 ONYX", precio: "999.00", img: "/samba.png", tag: "GRAIL", 
+      desc: "Máxima tecnología Boost. Primeknit que se adapta como una media para una comodidad futurista sin precedentes.", 
+      detalles: ["Boost Full Length", "Tejido Primeknit", "Color Onyx"], tallas: ["41", "42", "43", "44"] 
     },
     { 
-      id: 9, marca: "ADIDAS", nombre: "YEEZY SLIDE BONE", precio: "499.00", img: "/samba.png", tag: "RESTOCK", 
-      desc: "La sandalia que cambió la industria. Inyectada con espuma EVA de alta densidad para una ligereza y durabilidad extremas. El diseño minimalista y la suela con dientes de sierra ofrecen una tracción y confort superiores.", 
-      detalles: ["Espuma EVA Inyectada", "Suela de Tracción", "Diseño Minimalista"], tallas: ["39", "40", "41", "42"] 
+      id: 9, marca: "ADIDAS", nombre: "YEEZY 350 BONE", precio: "999.00", img: "/samba.png", tag: "CLEAN", 
+      desc: "Blanco puro con amortiguación de alta respuesta. El par definitivo para el verano y looks minimalistas.", 
+      detalles: ["Color Bone", "Amortiguación Pro", "Respirable"], tallas: ["40", "41", "42", "43"] 
+    },
+    { 
+      id: 10, marca: "ADIDAS", nombre: "YEEZY SLIDE BONE", precio: "499.00", img: "/samba.png", tag: "COMFORT", 
+      desc: "La sandalia que cambió el juego. Espuma EVA inyectada para ligereza y un diseño ergonómico de vanguardia.", 
+      detalles: ["EVA Inyectada", "Diseño Minimal", "Suela Dentada"], tallas: ["38", "40", "42"] 
     },
     { 
       id: 21, marca: "NIKE", nombre: "AIR FORCE 1 WHITE", precio: "459.00", img: "/samba.png", tag: "ESSENTIAL", 
-      desc: "El clásico de clásicos. Desde su debut en 1982, el Air Force 1 ha trascendido el baloncesto para convertirse en un pilar de la moda global. Este modelo 'Triple White' cuenta con un acabado de cuero premium impecable y la revolucionaria unidad Nike Air encapsulada.", 
-      detalles: ["Unidad Nike Air", "Piel de Grano Completo", "Suela Non-Marking"], tallas: ["7", "8", "9", "10", "11"] 
+      desc: "Piel de grano completo y unidad Air encapsulada. El inicio de la cultura sneaker global en su versión más nítida.", 
+      detalles: ["Cuero Genuino", "Air-Sole", "Icono Mundial"], tallas: ["7", "8", "9", "10", "11"] 
     },
     { 
-      id: 22, marca: "NIKE", nombre: "DUNK LOW PANDA", precio: "480.00", img: "/samba.png", tag: "TREND", 
-      desc: "El par más viral de los últimos años. Las Nike Dunk Low 'Panda' ofrecen una estética monocromática infalible que combina con cualquier outfit urbano. Construidas con una base de cuero blanco y superposiciones en negro obsidiana.", 
-      detalles: ["Cuero Liso", "Bloques de Color BN", "Suela de Tracción"], tallas: ["8", "9", "10", "11"] 
+      id: 22, marca: "NIKE", nombre: "DUNK LOW PANDA", precio: "480.00", img: "/samba.png", tag: "VIRAL", 
+      desc: "El par más vendido. Blanco y negro monocromático que funciona con absolutamente todo. Importado de retailers USA.", 
+      detalles: ["Cuero Liso", "Panda Colorway", "Tracción de Copa"], tallas: ["8", "9", "10", "11", "12"] 
     },
     { 
       id: 23, marca: "NIKE", nombre: "JORDAN 1 LOW UNC", precio: "599.00", img: "/samba.png", tag: "HYPE", 
-      desc: "Homenaje a la Universidad de Carolina del Norte. Azul celeste vibrante sobre cuero premium blanco. El icónico logotipo Wings en el talón completa este diseño atemporal que fusiona la herencia del basket con el lujo moderno.", 
-      detalles: ["University Blue", "Air-Sole Encapsulada", "Wings Logo"], tallas: ["8", "9", "10", "11"] 
+      desc: "Colores universitarios de MJ. Azul celeste sobre cuero blanco de alta calidad. Wings logo bordado en el talón.", 
+      detalles: ["University Blue", "Wings Logo", "Corte Low"], tallas: ["8", "9", "10", "11"] 
     },
     { 
       id: 24, marca: "NIKE", nombre: "JORDAN 4 BRED REIMAGINED", precio: "1200.00", img: "/samba.png", tag: "GRAIL", 
-      desc: "Aniversario 35 de un diseño icónico de Tinker Hatfield. Esta edición utiliza un cuero negro de calidad suprema que envejece con elegancia. Mantiene los logotipos 'Nike Air' originales en el talón y la malla lateral transpirable.", 
-      detalles: ["Cuero Premium", "Nike Air OG", "Cápsula Air Visible", "Caja Especial"], tallas: ["9", "10", "11"] 
+      desc: "Cuero negro de calidad suprema 'Reimagined'. La joya de la corona con logotipos Nike Air originales.", 
+      detalles: ["Cuero Premium", "Nike Air OG", "Caja Especial"], tallas: ["9", "10", "11"] 
     },
     { 
       id: 25, marca: "NIKE", nombre: "DUNK LOW GREY FOG", precio: "520.00", img: "/samba.png", tag: "CLEAN", 
-      desc: "Elegancia en tonos neutros. El Grey Fog ofrece una alternativa sofisticada al Panda, con superposiciones de color gris niebla sobre una base blanca. Perfecto para quienes buscan un look más sutil pero de alto impacto.", 
-      detalles: ["Gris Niebla", "Construcción de Cuero", "Suela de Copa"], tallas: ["8", "9", "10", "11"] 
+      desc: "Alternativa sofisticada al Panda. Gris niebla sobre base blanca para una rotación más elegante y sutil.", 
+      detalles: ["Gris Fog", "Suela de Copa", "Leather Premium"], tallas: ["8", "9", "10", "11"] 
     },
     { 
-      id: 26, marca: "NIKE", nombre: "AIR JORDAN 1 HIGH CHICAGO", precio: "1800.00", img: "/samba.png", tag: "ULTIMATE", 
-      desc: "La zapatilla más importante de todos los tiempos. Los colores de los Chicago Bulls en la silueta que lo inició todo en 1985. Un 'must-have' absoluto para cualquier coleccionista serio que entienda el valor de la cultura.", 
-      detalles: ["Varsity Red", "Cuero de Alta Gama", "Estética OG 1985"], tallas: ["9", "10", "11"] 
+      id: 26, marca: "NIKE", nombre: "JORDAN 1 HIGH CHICAGO", precio: "1850.00", img: "/samba.png", tag: "ULTIMATE", 
+      desc: "Historia pura de 1985. El par que lo inició todo, certificado por retailers de Miami. Coleccionismo puro.", 
+      detalles: ["Varsity Red", "Corte High OG", "Hype Máximo"], tallas: ["9", "10", "11"] 
+    },
+    { 
+      id: 27, marca: "NIKE", nombre: "AIR MAX 1 '86 BIG BUBBLE", precio: "650.00", img: "/samba.png", tag: "RETRO", 
+      desc: "La burbuja de aire original masiva. Tecnología visible y confort histórico de la era dorada de Nike.", 
+      detalles: ["Big Bubble", "Mesh & Suede", "Estilo 80s"], tallas: ["8", "9", "10", "11"] 
+    },
+    { 
+      id: 28, marca: "NIKE", nombre: "JORDAN 3 WHITE CEMENT", precio: "1100.00", img: "/samba.png", tag: "CLASSIC", 
+      desc: "Famosa por su Elephant Print. El balance perfecto entre calzado deportivo de lujo y herencia Jordan.", 
+      detalles: ["Elephant Print", "Nike Air Branding", "Piel de Lujo"], tallas: ["9", "10", "11"] 
+    },
+    { 
+      id: 29, marca: "NIKE", nombre: "AIR FORCE 1 NOCTA", precio: "720.00", img: "/samba.png", tag: "COLAB", 
+      desc: "Colaboración con Drake. Cuero premium y detalles exclusivos en la entresuela. Un par de estatus.", 
+      detalles: ["Love You Forever", "Cuero de Grano", "Caja Nocta"], tallas: ["8", "9", "10", "11"] 
+    },
+    { 
+      id: 30, marca: "NIKE", nombre: "JORDAN 1 LOW TRAVIS SCOTT", precio: "2500.00", img: "/samba.png", tag: "ELITE", 
+      desc: "Swoosh invertido y materiales de ultra-lujo. El nivel más alto de importación directa de USA.", 
+      detalles: ["Swoosh Invertido", "Travis Scott Colab", "Máximo Estatus"], tallas: ["9", "10", "11"] 
     }
   ], []);
 
-  // === 7. LÓGICA DE PROCESAMIENTO AUTOMÁTICO ===
-  const totalCart = cart.reduce((acc, curr) => acc + parseFloat(curr.precio), 0).toFixed(2);
+  // ==========================================
+  // 6. LÓGICA DE NEGOCIO Y FILTRADO
+  // ==========================================
+  const totalCart = useMemo(() => cart.reduce((acc, curr) => acc + parseFloat(curr.precio), 0).toFixed(2), [cart]);
 
-  const handleFinalPayment = () => {
-    if(!customerData.nombre || !customerData.whatsapp || !customerData.dni) return alert("Mano, completa todos los datos para la importación.");
-    const items = cart.map(i => `${i.nombre} (Talla: ${i.size})`).join(", ");
-    const newOrder = { id: customerData.dni, cliente: customerData.nombre, whatsapp: customerData.whatsapp, total: totalCart, items, status: "PAGO RECIBIDO", location: "MIAMI HUB -> LIMA", eta: "15 DÍAS" };
-    setOrders([newOrder, ...orders]);
-    const msg = `¡Hola Soponifero Store! Acabo de pedir: ${items}. Total: S/ ${totalCart}. Mi DNI: ${customerData.dni}. Espero confirmación.`;
-    window.open(`https://wa.me/519XXXXXXXX?text=${encodeURIComponent(msg)}`, '_blank');
+  const handleFinalPayment = useCallback(() => {
+    if(!customerData.nombre || !customerData.whatsapp || !customerData.dni) return alert("Mano, completa tus datos para el envío.");
+    const items = cart.map(i => `${i.nombre} (${i.size})`).join(", ");
+    const newOrder = { id: customerData.dni, cliente: customerData.nombre, whatsapp: customerData.whatsapp, total: totalCart, items, status: "EN PROCESO", location: "MIAMI HUB" };
+    setOrders(prev => [newOrder, ...prev]);
+    const message = `¡Hola Soponifero Store! Acabo de pedir: ${items}. Total: S/ ${totalCart}. Mi DNI: ${customerData.dni}`;
+    window.open(`https://wa.me/519XXXXXXXX?text=${encodeURIComponent(message)}`, '_blank');
     setCart([]); setView('SUCCESS');
-  };
+  }, [customerData, cart, totalCart]);
 
   return (
-    <div className="min-h-screen bg-white text-black font-sans cursor-none selection:bg-red-600">
-      {/* 8. CURSOR PERSONALIZADO (INGENIERÍA UX) */}
-      <motion.div className="fixed top-0 left-0 w-8 h-8 border-2 border-red-600 rounded-full pointer-events-none z-[9999] hidden lg:block" animate={{ x: mousePos.x - 16, y: mousePos.y - 16 }} transition={{ type: 'spring', damping: 20 }} />
+    <div className="min-h-screen bg-white text-black font-sans selection:bg-red-600 overflow-x-hidden antialiased">
+      
+      {/* CURSOR - GPU ACCELERATED PARA MAC */}
+      <motion.div className="fixed top-0 left-0 w-8 h-8 border-2 border-red-600 rounded-full pointer-events-none z-[9999] hidden lg:block transform-gpu" animate={{ x: mousePos.x - 16, y: mousePos.y - 16 }} transition={{ type: 'spring', damping: 25, stiffness: 250 }} />
 
-      {/* 9. MARQUEE NEGRO (RESTAURADO) */}
-      <div className="bg-black text-white py-3 overflow-hidden border-b border-red-600/30 italic">
-        <motion.div initial={{ x: "100%" }} animate={{ x: "-100%" }} transition={{ duration: 25, repeat: Infinity, ease: "linear" }} className="inline-block text-[10px] font-black uppercase tracking-[0.5em] whitespace-nowrap">
-          • STOCK REAL LIMA 2025 • IMPORTACIÓN DIRECTA USA • INVERSIÓN S/ 11,000 • SOPONIFERO STORE • LEGIT CHECK 100% • LIMA NORTE ENVÍOS •
+      {/* MARQUEE DINÁMICO */}
+      <div className="bg-black text-white py-3 overflow-hidden border-b border-red-600/30 italic transform-gpu">
+        <motion.div initial={{ x: "100%" }} animate={{ x: "-100%" }} transition={{ duration: 35, repeat: Infinity, ease: "linear" }} className="inline-block text-[10px] font-black uppercase tracking-[0.5em] whitespace-nowrap">
+          • STOCK REAL LIMA 2025 • IMPORTACIÓN USA • INVERSIÓN S/ 11,000 • SOPONIFERO STORE • LEGIT CHECK 100% • LIMA NORTE •
         </motion.div>
       </div>
 
-      {/* 10. NAVBAR (ESTÉTICA PROFESIONAL) */}
-      <nav className="sticky top-0 w-full z-50 bg-white border-b border-gray-100 h-24 flex items-center justify-between px-6 lg:px-12">
+      {/* NAVBAR RESPONSIVA */}
+      <nav className="sticky top-0 w-full z-50 bg-white/90 backdrop-blur-xl border-b border-gray-100 h-20 md:h-24 flex items-center justify-between px-4 md:px-12">
         <button onClick={() => setView('HOME')} className="flex flex-col items-start leading-none font-black italic tracking-tighter group">
-          <span className="text-2xl text-red-600 group-hover:tracking-widest transition-all">SOPONIFERO</span><span className="text-2xl">STORE</span>
+          <span className="text-xl md:text-2xl text-red-600 group-hover:tracking-widest transition-all">SOPONIFERO</span>
+          <span className="text-xl md:text-2xl">STORE</span>
         </button>
-        <div className="hidden lg:flex items-center gap-10 text-[11px] font-black uppercase tracking-[0.3em]">
-          <button onClick={() => setView('HOME')} className="hover:text-red-600 transition-colors">Inicio</button>
-          <button onClick={() => setView('TRACKING')} className="hover:text-red-600 transition-colors">Rastrear</button>
-          <button className="bg-red-600 text-white px-8 py-10 -my-10 hover:bg-black transition-all shadow-xl">Sale</button>
+        <div className="hidden lg:flex items-center gap-12 text-[11px] font-black uppercase tracking-[0.3em]">
+          <button onClick={() => setView('HOME')} className="hover:text-red-600 transition-colors">Colecciones</button>
+          <button onClick={() => setView('TRACKING')} className="hover:text-red-600 transition-colors">Rastreo USA</button>
+          <button className="bg-red-600 text-white px-8 py-10 -my-10 shadow-2xl hover:bg-black transition-all">Sale</button>
         </div>
-        <div className="flex items-center gap-8">
+        <div className="flex items-center gap-4 md:gap-8">
           <Users size={22} className="cursor-pointer hover:text-red-600" onClick={() => setView('ADMIN')} />
           <div className="relative cursor-pointer" onClick={() => setIsCartOpen(true)}>
-            <ShoppingBag size={24} />
-            {cart.length > 0 && <span className="absolute -top-2 -right-2 bg-red-600 text-white text-[8px] w-5 h-5 flex items-center justify-center rounded-full font-black shadow-lg shadow-red-600/30">{cart.length}</span>}
+            <ShoppingBag size={26} />
+            {cart.length > 0 && <span className="absolute -top-2 -right-2 bg-red-600 text-white text-[8px] w-5 h-5 flex items-center justify-center rounded-full font-black shadow-lg">{cart.length}</span>}
           </div>
         </div>
       </nav>
 
-      <main className="max-w-[1800px] mx-auto px-6 lg:px-12 pt-0">
+      <main className="max-w-[1800px] mx-auto px-4 md:px-12 pt-0 text-left">
         
-        {/* 11. VISTA HOME: SLIDER AUTOMÁTICO (RESTAURADO) */}
+        {/* VISTA HOME */}
         {view === 'HOME' && (
           <>
-            <section className="relative w-full h-[60vh] bg-gray-100 overflow-hidden -mx-6 lg:-mx-12">
+            {/* HERO SLIDER 60VH / OPTIMIZADO PARA MÓVIL */}
+            <section className="relative w-full h-[45vh] md:h-[65vh] bg-gray-100 overflow-hidden -mx-4 md:-mx-12 transform-gpu">
               <AnimatePresence mode='wait'>
-                <motion.img key={currentHeroIndex} src={heroImages[currentHeroIndex]} initial={{ opacity: 0, scale: 1.1 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} transition={{ duration: 1.5 }} className="absolute inset-0 w-full h-full object-cover" />
+                <motion.img 
+                  key={currentHeroIndex} src={heroImages[currentHeroIndex]} 
+                  initial={{ opacity: 0, scale: 1.08 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} transition={{ duration: 1.2 }} 
+                  className="absolute inset-0 w-full h-full object-cover will-change-transform"
+                />
               </AnimatePresence>
-              <div className="absolute inset-0 bg-black/40 flex flex-col justify-center items-start px-12 lg:px-24">
-                <motion.h2 initial={{ y: 30, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="text-white text-6xl md:text-[120px] font-black italic uppercase leading-[0.8] tracking-tighter drop-shadow-2xl">THE <br/><span className="text-red-600">GRAILS</span></motion.h2>
-                <div className="flex gap-4 mt-12">
-                   <button onClick={() => window.scrollTo({top: 800, behavior: 'smooth'})} className="bg-red-600 text-white px-12 py-5 font-black uppercase text-xs italic shadow-2xl hover:bg-white hover:text-red-600 transition-all">Explorar Stock</button>
-                   <button onClick={() => setView('TRACKING')} className="bg-white/10 backdrop-blur-md text-white border border-white/20 px-12 py-5 font-black uppercase text-xs italic hover:bg-white hover:text-black transition-all">Rastrear Importación</button>
+              <div className="absolute inset-0 bg-black/40 flex flex-col justify-center items-start px-8 md:px-24">
+                <motion.h2 initial={{ y: 30, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="text-white text-5xl md:text-[140px] font-black italic uppercase leading-[0.8] tracking-tighter drop-shadow-2xl italic">THE <br/><span className="text-red-600">GRAILS</span></motion.h2>
+                <div className="flex gap-4 mt-8 md:mt-12">
+                   <button onClick={() => window.scrollTo({top: 800, behavior: 'smooth'})} className="bg-red-600 text-white px-8 md:px-12 py-4 md:py-6 font-black uppercase text-[10px] md:text-xs italic shadow-2xl hover:bg-white hover:text-red-600 transition-all">Explorar Stock</button>
                 </div>
               </div>
             </section>
 
-            {/* SECCIÓN ADIDAS (LOGOS RESTAURADOS) */}
-            <section className="mt-32 mb-20">
-               <div className="flex items-center gap-6 mb-16 italic">
-                  <div className="h-1 flex-1 bg-gray-100" /><h3 className="text-4xl font-black uppercase tracking-tighter">ADIDAS <span className="text-red-600">VAULT</span></h3><div className="h-1 flex-1 bg-gray-100" />
+            {/* GRILLA DE PRODUCTOS - FIX CELULAR (1 COL) / TABLET (2 COL) / PC (4 COL) */}
+            <section className="mt-16 md:mt-32 mb-20 md:mb-40">
+               <div className="flex items-center gap-6 md:gap-10 mb-12 md:mb-24 italic border-b border-gray-100 pb-10">
+                  <h3 className="text-2xl md:text-5xl font-black uppercase tracking-tighter italic">LATEST <span className="text-red-600">HUB</span></h3>
+                  <div className="h-[2px] flex-1 bg-gray-100 hidden md:block" />
+                  <div className="text-[9px] font-black text-gray-400 uppercase tracking-widest hidden md:block">Importación USA 2025</div>
                </div>
-               <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-24">
-                 {productos.filter(p => p.marca === "ADIDAS").map(p => <ProductCard key={p.id} prod={p} onClick={() => {setProduct(p); setView('DETAIL'); window.scrollTo(0,0)}} />)}
-               </div>
-            </section>
-
-            {/* SECCIÓN NIKE (LOGOS RESTAURADOS) */}
-            <section className="mt-40 mb-40">
-               <div className="flex items-center gap-6 mb-16 italic">
-                  <div className="h-1 flex-1 bg-gray-100" /><h3 className="text-4xl font-black uppercase tracking-tighter">NIKE <span className="text-red-600">LAB</span></h3><div className="h-1 flex-1 bg-gray-100" />
-               </div>
-               <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-24">
-                 {productos.filter(p => p.marca === "NIKE").map(p => <ProductCard key={p.id} prod={p} onClick={() => {setProduct(p); setView('DETAIL'); window.scrollTo(0,0)}} />)}
+               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 md:gap-x-12 gap-y-16 md:gap-y-32">
+                 {productos.map(p => <ProductCard key={p.id} prod={p} onClick={() => {setProduct(p); setView('DETAIL'); window.scrollTo(0,0)}} />)}
                </div>
             </section>
 
-            {/* INFO BLOCKS (S/ 11K) */}
-            <section className="mb-40 grid grid-cols-1 md:grid-cols-4 gap-8 italic">
-              <div className="md:col-span-2 bg-black rounded-[56px] p-20 text-white relative overflow-hidden">
-                 <h3 className="text-6xl font-black uppercase mb-8 leading-none tracking-tighter">HECHOS NO <br/><span className="text-red-600">PALABRAS.</span></h3>
-                 <p className="text-xs font-bold opacity-40 uppercase tracking-widest leading-loose max-w-sm">Inversión real de S/ 11,000 en stock físico para Lima Norte. No somos dropshipping, somos importación directa verificada.</p>
-                 <Zap size={250} className="absolute -bottom-20 -right-20 text-white/5" />
+            {/* INFO BLOCKS - FIX CELULAR (VERTICAL) */}
+            <section className="mb-40 grid grid-cols-1 md:grid-cols-4 gap-8 md:gap-12 italic text-left">
+              <div className="md:col-span-2 bg-black rounded-[40px] md:rounded-[80px] p-12 md:p-24 text-white relative overflow-hidden transform-gpu">
+                 <h3 className="text-5xl md:text-8xl font-black uppercase mb-8 md:mb-12 leading-none tracking-tighter italic">HECHOS NO <br/><span className="text-red-600">PALABRAS.</span></h3>
+                 <p className="text-[12px] md:text-[15px] font-bold opacity-40 uppercase tracking-[0.2em] max-w-md leading-loose">Inversión real de S/ 11,000 en stock físico para Lima Norte. No somos dropshipping, somos ingeniería de importación.</p>
+                 <Zap size={350} className="absolute -bottom-20 -right-20 text-white/[0.03] hidden lg:block" />
               </div>
-              <div className="bg-red-600 rounded-[56px] p-16 text-white flex flex-col justify-between shadow-3xl hover:scale-[1.02] transition-transform">
-                <ShieldCheck size={50} /><h4 className="text-3xl font-black uppercase tracking-tighter leading-none">LEGIT CHECK <br/>AL 100%</h4>
+              <div className="bg-red-600 rounded-[40px] md:rounded-[80px] p-12 md:p-16 text-white flex flex-col justify-between shadow-3xl hover:translate-y-[-10px] transition-transform duration-700">
+                <ShieldCheck size={50} md:size={80} /><h4 className="text-3xl md:text-5xl font-black uppercase tracking-tighter leading-none italic">LEGIT <br/>CHECKED</h4>
               </div>
-              <div className="bg-gray-50 rounded-[56px] p-16 flex flex-col justify-between border border-gray-100 hover:scale-[1.02] transition-transform">
-                <Truck size={50} className="text-red-600" /><h4 className="text-3xl font-black uppercase tracking-tighter leading-none">LIMA NORTE <br/>ENTREGA PRO</h4>
+              <div className="bg-gray-50 rounded-[40px] md:rounded-[80px] p-12 md:p-16 flex flex-col justify-between border shadow-inner hover:translate-y-[-10px] transition-transform duration-700">
+                <Truck size={50} md:size={80} className="text-red-600" /><h4 className="text-3xl md:text-5xl font-black uppercase tracking-tighter leading-none italic">LIMA <br/>LOGISTICS</h4>
               </div>
             </section>
           </>
         )}
 
-        {/* 12. VISTA DETALLE (DESCRIPCIONES LARGAS INTEGRADAS) */}
+        {/* VISTA DETALLE PRODUCTO */}
         {view === 'DETAIL' && product && (
-          <div className="py-24 min-h-screen text-left">
-            <button onClick={() => setView('HOME')} className="mb-12 flex items-center gap-2 text-[10px] font-black uppercase text-gray-400 hover:text-red-600 transition-all"><ArrowLeft size={16} /> Volver a Colección</button>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 items-start italic">
-              <div className="bg-gray-50 rounded-[64px] p-20 flex items-center justify-center aspect-square shadow-inner relative group overflow-hidden">
-                <img src={product.img} className="w-full h-auto drop-shadow-3xl group-hover:scale-110 transition-transform duration-1000" alt={product.nombre} />
-                <Zap className="absolute -bottom-20 -right-20 text-black/[0.03] w-96 h-96" />
+          <div className="py-12 md:py-24 min-h-screen text-left italic">
+            <button onClick={() => setView('HOME')} className="mb-12 flex items-center gap-3 text-[10px] md:text-[11px] font-black uppercase text-gray-400 hover:text-red-600 transition-all tracking-widest"><ArrowLeft size={18} /> Volver a Colección</button>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 md:gap-40 items-start">
+              <div className="bg-gray-50 rounded-[40px] md:rounded-[100px] p-12 md:p-24 flex items-center justify-center aspect-square shadow-inner relative overflow-hidden transform-gpu">
+                <img src={product.img} className="w-full h-auto drop-shadow-4xl will-change-transform group-hover:scale-110 transition-transform duration-1000" alt={product.nombre} />
+                <Zap className="absolute -bottom-20 -right-20 text-black/[0.04] w-[400px] h-[400px]" />
               </div>
               <div className="flex flex-col">
-                <span className="text-red-600 font-black uppercase text-[13px] mb-4 tracking-[0.5em]">{product.marca}</span>
-                <h2 className="text-6xl md:text-9xl font-black uppercase leading-[0.85] mb-8 tracking-tighter">{product.nombre}</h2>
-                <p className="text-6xl font-black text-black mb-12 underline decoration-red-600 decoration-8 underline-offset-8">S/ {product.precio}</p>
-                <div className="mb-12">
-                   <h3 className="text-[11px] font-black uppercase tracking-widest mb-6 text-gray-400">Tallas Disponibles (US)</h3>
-                   <div className="grid grid-cols-4 gap-4 max-w-sm">
+                <span className="text-red-600 font-black uppercase text-[12px] md:text-[16px] mb-4 md:mb-8 tracking-[0.6em]">{product.marca}</span>
+                <h2 className="text-5xl md:text-[130px] font-black uppercase leading-[0.85] mb-8 md:mb-12 tracking-tighter italic">{product.nombre}</h2>
+                <p className="text-6xl md:text-9xl font-black text-black mb-12 md:mb-20 italic underline decoration-red-600 decoration-[8px] md:decoration-[12px] underline-offset-[16px]">S/ {product.precio}</p>
+                <div className="mb-12 md:mb-20">
+                   <h3 className="text-[11px] md:text-[13px] font-black uppercase tracking-widest mb-8 md:mb-12 text-gray-400">Tallas Disponibles (US)</h3>
+                   <div className="grid grid-cols-4 gap-4 md:gap-8 max-w-lg">
                      {product.tallas.map(t => (
-                       <button key={t} onClick={() => setSelectedSize(t)} className={`py-5 border-2 ${selectedSize === t ? 'border-red-600 text-red-600 bg-red-50 shadow-xl scale-105' : 'border-gray-100 text-gray-400'} font-black text-xs rounded-2xl transition-all`}>[ {t} ]</button>
+                       <button key={t} onClick={() => setSelectedSize(t)} className={`py-5 md:py-8 border-2 ${selectedSize === t ? 'border-red-600 text-red-600 bg-red-50 shadow-2xl scale-105' : 'border-gray-100 text-gray-400'} font-black text-xs md:text-lg rounded-[20px] md:rounded-[32px] transition-all`}>[ {t} ]</button>
                      ))}
                    </div>
                 </div>
-                <button onClick={() => {if(!selectedSize) return alert("Selecciona tu talla, mano."); setCart([...cart, {...product, size: selectedSize, cid: Date.now()}]); setIsCartOpen(true)}} className="bg-black text-white py-8 rounded-full font-black uppercase italic tracking-[0.3em] hover:bg-red-600 transition-all shadow-2xl flex gap-4 items-center justify-center text-sm shadow-inner group">
-                  <ShoppingBag size={24} className="group-hover:rotate-12 transition-transform"/> Agregar a la Bolsa
+                <button onClick={() => {if(!selectedSize) return alert("Selecciona tu talla, mano."); setCart([...cart, {...product, size: selectedSize, cid: Date.now()}]); setIsCartOpen(true)}} className="bg-black text-white py-8 md:py-12 rounded-full font-black uppercase italic tracking-[0.4em] hover:bg-red-600 transition-all shadow-4xl flex gap-6 items-center justify-center text-[10px] md:text-sm">
+                  <ShoppingBag size={28} /> Agregar a la Bolsa
                 </button>
-                <div className="mt-20 border-t border-gray-100 pt-16">
-                   <h3 className="text-xs font-black uppercase mb-6 text-red-600 tracking-widest">Anatomía del Producto</h3>
-                   <p className="text-gray-400 text-[13px] font-bold uppercase tracking-widest leading-loose max-w-md">{product.desc}</p>
-                   <div className="mt-12 space-y-4">
-                     {product.detalles.map((d, i) => <div key={i} className="flex items-center gap-3 text-[10px] font-black uppercase text-black"><CheckCircle2 size={16} className="text-red-600"/> {d}</div>)}
+                <div className="mt-20 md:mt-32 border-t pt-16 md:pt-24 pb-20">
+                   <h3 className="text-xs font-black uppercase mb-8 text-red-600 tracking-[0.3em]">Especificaciones Técnicas</h3>
+                   <p className="text-gray-400 text-[14px] md:text-[18px] font-bold uppercase tracking-widest leading-loose italic max-w-xl">{product.desc}</p>
+                   <div className="mt-12 md:mt-20 space-y-5 md:space-y-8">
+                     {product.detalles.map((d, i) => <div key={i} className="flex items-center gap-4 text-[11px] md:text-[13px] font-black uppercase text-black"><CheckCircle2 size={24} className="text-red-600"/> {d}</div>)}
                    </div>
                 </div>
               </div>
@@ -285,84 +334,46 @@ export default function App() {
           </div>
         )}
 
-        {/* 13. VISTA CHECKOUT AUTOMÁTICO (PUENTE A WHATSAPP) */}
+        {/* VISTA CHECKOUT AUTOMÁTICO */}
         {view === 'CHECKOUT' && (
-          <section className="py-32 min-h-screen max-w-2xl mx-auto italic text-left">
-            <h2 className="text-7xl font-black uppercase mb-16 tracking-tighter">Finalizar <br/><span className="text-red-600">Importación</span></h2>
-            <div className="space-y-6 bg-gray-50 p-16 rounded-[64px] border border-gray-100 shadow-inner">
-               <div className="space-y-2"><span className="text-[10px] font-black uppercase text-red-600 ml-4">Nombre de Receptor</span><input type="text" placeholder="EJ: JEFERSON ..." className="w-full p-8 rounded-2xl bg-white border font-black uppercase text-xs outline-none focus:ring-2 ring-red-600 transition-all shadow-sm" value={customerData.nombre} onChange={(e)=>setCustomerData({...customerData, nombre: e.target.value})} /></div>
-               <div className="space-y-2"><span className="text-[10px] font-black uppercase text-red-600 ml-4">DNI (Para Rastreo)</span><input type="text" placeholder="DNI..." className="w-full p-8 rounded-2xl bg-white border font-black uppercase text-xs outline-none focus:ring-2 ring-red-600 transition-all shadow-sm" value={customerData.dni} onChange={(e)=>setCustomerData({...customerData, dni: e.target.value})} /></div>
-               <div className="space-y-2"><span className="text-[10px] font-black uppercase text-red-600 ml-4">WhatsApp de Contacto</span><input type="text" placeholder="987 ..." className="w-full p-8 rounded-2xl bg-white border font-black uppercase text-xs outline-none focus:ring-2 ring-red-600 transition-all shadow-sm" value={customerData.whatsapp} onChange={(e)=>setCustomerData({...customerData, whatsapp: e.target.value})} /></div>
-               <button onClick={handleFinalPayment} className="w-full bg-black text-white py-10 rounded-full font-black uppercase italic tracking-[0.5em] hover:bg-red-600 transition shadow-3xl text-xs mt-12">Confirmar y Pagar S/ {totalCart}</button>
+          <section className="py-20 md:py-40 min-h-screen max-w-3xl mx-auto italic text-left">
+            <h2 className="text-6xl md:text-[110px] font-black uppercase mb-16 md:mb-24 tracking-tighter italic">Finalizar <br/><span className="text-red-600">Pedido</span></h2>
+            <div className="space-y-8 md:space-y-12 bg-gray-50 p-10 md:p-24 rounded-[40px] md:rounded-[100px] border shadow-inner">
+               <input type="text" placeholder="NOMBRE COMPLETO" className="w-full p-8 md:p-12 rounded-[24px] md:rounded-[48px] bg-white border font-black uppercase text-xs md:text-sm outline-none focus:ring-4 ring-red-600" value={customerData.nombre} onChange={(e)=>setCustomerData({...customerData, nombre: e.target.value})} />
+               <input type="text" placeholder="DNI (RASTREO HUB)" className="w-full p-8 md:p-12 rounded-[24px] md:rounded-[48px] bg-white border font-black uppercase text-xs md:text-sm outline-none focus:ring-4 ring-red-600" value={customerData.dni} onChange={(e)=>setCustomerData({...customerData, dni: e.target.value})} />
+               <input type="text" placeholder="WHATSAPP DESTINO" className="w-full p-8 md:p-12 rounded-[24px] md:rounded-[48px] bg-white border font-black uppercase text-xs md:text-sm outline-none focus:ring-4 ring-red-600" value={customerData.whatsapp} onChange={(e)=>setCustomerData({...customerData, whatsapp: e.target.value})} />
+               <button onClick={handleFinalPayment} className="w-full bg-black text-white py-10 md:py-16 rounded-full font-black uppercase italic tracking-[0.5em] md:tracking-[0.8em] hover:bg-red-600 transition-all shadow-4xl text-[10px] md:text-xs">Confirmar Pedido S/ {totalCart}</button>
             </div>
           </section>
         )}
 
-        {/* 14. VISTA SUCCESS (ESTADO LOGÍSTICO) */}
-        {view === 'SUCCESS' && (
-          <section className="py-48 text-center italic">
-            <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="w-44 h-44 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-12 shadow-3xl shadow-green-500/20"><Check size={90} className="text-white" /></motion.div>
-            <h2 className="text-7xl font-black uppercase mb-6 tracking-tighter">¡HECHO, MANO!</h2>
-            <p className="text-gray-400 font-bold uppercase tracking-widest text-xs mb-16 max-w-sm mx-auto">Tu pedido ha sido procesado. Los datos están en el panel admin y se abrió WhatsApp.</p>
-            <button onClick={() => setView('HOME')} className="bg-black text-white px-16 py-6 rounded-full font-black uppercase italic hover:bg-red-600 transition shadow-2xl">Regresar a Inicio</button>
-          </section>
-        )}
-
-        {/* 15. VISTA RASTREO (HUB USA) */}
-        {view === 'TRACKING' && (
-          <section className="py-32 min-h-screen max-w-4xl mx-auto italic text-left">
-            <h2 className="text-7xl font-black uppercase mb-20 tracking-tighter">Hub <span className="text-red-600">Rastreo</span></h2>
-            <div className="bg-gray-50 rounded-[64px] p-24 text-center mb-16 shadow-inner">
-              <Plane size={80} className="mx-auto mb-10 text-red-600" />
-              <div className="flex gap-6 mt-12">
-                <input type="text" placeholder="DNI..." className="flex-1 bg-white border-2 p-8 rounded-2xl font-black uppercase text-sm outline-none focus:ring-2 ring-red-600" value={trackingInput} onChange={(e)=>setTrackingInput(e.target.value)} />
-                <button onClick={() => {const f = orders.find(o => o.id === trackingInput); setTrackingResult(f || null); if(!f) alert("DNI no registrado en el HUB USA.");}} className="bg-black text-white px-12 rounded-2xl font-black text-xs uppercase hover:bg-red-600 transition shadow-xl">Rastrear</button>
-              </div>
-            </div>
-            {trackingResult && (
-              <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="bg-black text-white rounded-[56px] p-16 flex justify-between items-center shadow-3xl relative overflow-hidden">
-                 <div className="relative z-10 text-left">
-                   <span className="text-red-600 font-black uppercase text-[10px] block tracking-[0.6em] mb-4">LOGÍSTICA INTERNACIONAL</span>
-                   <h4 className="text-5xl font-black uppercase leading-none italic">{trackingResult.status}</h4>
-                   <p className="text-white/40 text-[12px] font-bold mt-8 uppercase tracking-widest"><MapPin size={18} className="inline mr-3 text-red-600"/> {trackingResult.location}</p>
-                 </div>
-                 <div className="text-right border-l border-white/10 pl-16 z-10">
-                    <span className="text-white/30 text-[10px] font-black uppercase block mb-4">Entrega Estimada</span>
-                    <p className="text-4xl font-black uppercase text-red-600">{trackingResult.eta}</p>
-                 </div>
-                 <Zap className="absolute -right-20 -bottom-20 text-white/[0.03] w-96 h-96" />
-              </motion.div>
-            )}
-          </section>
-        )}
-
-        {/* 16. VISTA ADMIN SECRETA (GESTIÓN S/ 11K) */}
+        {/* VISTA ADMIN PROFESIONAL */}
         {view === 'ADMIN' && (
-          <section className="py-32 min-h-screen text-left italic">
+          <section className="py-20 md:py-40 min-h-screen italic text-left">
             {!isAdminAuthenticated ? (
-              <div className="max-w-md mx-auto py-24 text-center bg-gray-50 rounded-[56px] p-16 border border-gray-100 shadow-inner">
-                <Lock size={64} className="mx-auto mb-12 text-red-600" />
-                <h3 className="text-4xl font-black uppercase mb-12 tracking-tighter">Dueño Access</h3>
-                <input type="password" placeholder="CLAVE (SOPONIFERO2025)..." className="w-full bg-white border-2 p-8 rounded-2xl font-black text-center mb-8 outline-none focus:ring-2 ring-red-600 transition-all" value={adminPass} onChange={(e)=>setAdminPass(e.target.value)} />
-                <button onClick={() => adminPass === 'SOPONIFERO2025' ? setIsAdminAuthenticated(true) : alert('Clave Incorrecta, mano.')} className="w-full bg-black text-white py-8 rounded-full font-black uppercase tracking-widest hover:bg-red-600 transition-all shadow-2xl">Acceder al Control</button>
+              <div className="max-w-md mx-auto py-24 text-center bg-gray-50 rounded-[40px] md:rounded-[100px] p-12 md:p-24 border shadow-inner">
+                <Lock size={60} md:size={100} className="mx-auto mb-12 text-red-600" />
+                <h3 className="text-4xl md:text-6xl font-black uppercase mb-12 tracking-tighter italic">Dueño HUB</h3>
+                <input type="password" placeholder="CLAVE..." className="w-full bg-white border-2 p-8 md:p-12 rounded-[32px] md:rounded-[48px] font-black text-center text-lg md:text-2xl outline-none focus:ring-4 ring-red-600 transition-all" value={adminPass} onChange={(e)=>setAdminPass(e.target.value)} />
+                <button onClick={() => adminPass === 'SOPONIFERO2025' ? setIsAdminAuthenticated(true) : alert('Clave Incorrecta')} className="w-full bg-black text-white py-8 md:py-12 rounded-full font-black uppercase tracking-widest mt-12 hover:bg-red-600 transition-all shadow-3xl">Entrar al Panel</button>
               </div>
             ) : (
-              <div className="space-y-16 text-left">
-                 <div className="flex justify-between items-end border-b-2 border-gray-100 pb-16">
-                   <h2 className="text-6xl font-black uppercase text-red-600 tracking-tighter leading-none">PEDIDOS WEB</h2>
-                   <button onClick={() => setIsAdminAuthenticated(false)} className="text-[11px] font-black uppercase text-gray-400 hover:text-black">Cerrar Sesión</button>
+              <div className="space-y-12 md:space-y-24 text-left">
+                 <div className="flex justify-between items-end border-b-4 pb-12 md:pb-24">
+                   <h2 className="text-5xl md:text-[130px] font-black uppercase text-red-600 tracking-tighter italic">HUB LOGÍSTICO</h2>
+                   <button onClick={() => setIsAdminAuthenticated(false)} className="text-[10px] md:text-[14px] font-black uppercase text-gray-400 hover:text-black tracking-[0.4em]">Logout</button>
                  </div>
-                 <div className="grid grid-cols-1 gap-8">
+                 <div className="grid grid-cols-1 gap-8 md:gap-12">
                     {orders.map(o => (
-                      <div key={o.id} className="bg-white border-2 border-gray-100 p-12 rounded-[56px] flex justify-between items-center hover:shadow-3xl transition-all duration-1000 group relative overflow-hidden">
+                      <div key={o.id} className="bg-white border-4 border-gray-100 p-8 md:p-20 rounded-[40px] md:rounded-[100px] flex justify-between items-center group relative overflow-hidden transform-gpu">
                          <div className="text-left relative z-10">
-                           <span className="bg-green-100 text-green-600 px-6 py-2 rounded-full text-[10px] font-black uppercase tracking-widest mb-6 inline-block">Venta Web Confirmada</span>
-                           <h4 className="text-4xl font-black uppercase mb-4">{o.cliente} | DNI: {o.id}</h4>
-                           <p className="text-red-600 font-black uppercase text-xl mb-4 italic">S/ {o.total} | Wsp: {o.whatsapp}</p>
-                           <p className="text-gray-400 font-bold uppercase text-[11px] tracking-widest">{o.items}</p>
+                           <span className="bg-green-100 text-green-600 px-6 py-2 rounded-full text-[10px] md:text-[12px] font-black uppercase tracking-[0.2em] mb-8 inline-block italic">ORDEN CONFIRMADA</span>
+                           <h4 className="text-3xl md:text-8xl font-black uppercase mb-4 tracking-tighter italic">{o.cliente} | DNI: {o.id}</h4>
+                           <p className="text-red-600 font-black uppercase text-lg md:text-4xl italic tracking-tighter">S/ {o.total} | Wsp: {o.whatsapp}</p>
+                           <p className="text-gray-400 font-bold uppercase text-[10px] md:text-[16px] mt-6 tracking-widest">{o.items}</p>
                          </div>
-                         <button onClick={()=>setOrders(orders.filter(ord => ord.id !== o.id))} className="text-gray-100 hover:text-red-600 transition-colors z-20"><Trash2 size={36}/></button>
-                         <div className="absolute top-0 right-0 w-3 h-full bg-red-600 group-hover:w-6 transition-all duration-700" />
+                         <button onClick={()=>setOrders(orders.filter(ord => ord.id !== o.id))} className="text-gray-100 hover:text-red-600 transition-all z-20"><Trash2 size={40} md:size={64}/></button>
+                         <div className="absolute top-0 right-0 w-4 h-full bg-red-600 group-hover:w-8 transition-all duration-1000" />
                       </div>
                     ))}
                  </div>
@@ -371,56 +382,55 @@ export default function App() {
           </section>
         )}
 
-        {/* 17. FOOTER INTEGRO (CON TODA LA DATA) */}
-        <footer className="bg-gray-50 -mx-12 px-12 pt-48 pb-24 border-t border-gray-100 mt-48 text-left relative overflow-hidden italic">
-          <div className="max-w-[1800px] mx-auto grid grid-cols-1 md:grid-cols-4 gap-24 mb-32 z-10 relative">
-            <div className="col-span-2">
-              <h2 className="text-8xl font-black text-red-600 mb-10 uppercase tracking-tighter leading-none">SOPONIFERO <br/> STORE</h2>
-              <p className="text-[13px] font-bold text-gray-400 uppercase leading-loose max-w-sm mb-16 italic">Especialistas en la importación de 'Grails' certificados de USA. Inversión real de S/ 11,000 en stock. Operaciones en Lima Norte 2025.</p>
-              <div className="flex gap-14 grayscale opacity-30 hover:opacity-100 transition-all duration-1000 items-center">
-                <img src="/visa.png" className="h-8" alt="Visa" onError={(e)=>e.target.style.display='none'} />
-                <img src="/mastercard.png" className="h-16" alt="Mastercard" onError={(e)=>e.target.style.display='none'} />
-                <img src="/izipay.png" className="h-14" alt="Izipay" onError={(e)=>e.target.style.display='none'} />
+        {/* FOOTER INTEGRO (S/ 11K) */}
+        <footer className="bg-gray-50 -mx-4 md:-mx-12 px-6 md:px-12 pt-40 md:pt-80 pb-24 md:pb-48 border-t border-gray-100 mt-40 md:mt-80 text-left relative overflow-hidden italic transform-gpu">
+          <div className="max-w-[1800px] mx-auto grid grid-cols-1 md:grid-cols-4 gap-24 md:gap-48 z-10 relative">
+            <div className="col-span-1 md:col-span-2">
+              <h2 className="text-7xl md:text-[160px] font-black text-red-600 mb-12 md:mb-24 uppercase tracking-tighter leading-none italic">SOPONIFERO <br/> STORE</h2>
+              <p className="text-[15px] md:text-[22px] font-bold text-gray-400 uppercase leading-loose max-w-2xl mb-16 md:mb-32 italic tracking-[0.1em]">Centro Logístico de Grails Certificados. Inversión real de S/ 11,000 en stock físico 2025. Somos el hub oficial de importación directa USA para Lima Norte. Hechos, no palabras.</p>
+              <div className="flex flex-wrap gap-12 md:gap-24 grayscale opacity-40 hover:opacity-100 transition-all duration-[3s] items-center">
+                <img src="/visa.png" className="h-8 md:h-16" alt="Visa" onError={(e)=>e.target.style.display='none'} />
+                <img src="/mastercard.png" className="h-16 md:h-32" alt="Mastercard" onError={(e)=>e.target.style.display='none'} />
+                <img src="/izipay.png" className="h-14 md:h-28" alt="Izipay" onError={(e)=>e.target.style.display='none'} />
               </div>
             </div>
-            <div className="flex flex-col gap-8">
-               <h4 className="font-black text-xs uppercase tracking-[0.5em] text-black">Navegación</h4>
-               <button onClick={()=>setView('HOME')} className="text-[12px] font-bold text-gray-400 text-left uppercase hover:text-red-600 transition">Colección Real</button>
-               <button onClick={()=>setView('ADMIN')} className="text-[12px] font-bold text-gray-400 text-left uppercase hover:text-red-600 transition">Dueño Login</button>
-               <button onClick={()=>setView('TRACKING')} className="text-[12px] font-bold text-gray-400 text-left uppercase hover:text-red-600 transition">Rastreo de Pedido</button>
+            <div className="flex flex-col gap-10 md:gap-16">
+               <h4 className="font-black text-[13px] md:text-[18px] uppercase tracking-[0.8em] text-black italic">Arquitectura HUB</h4>
+               <button onClick={()=>setView('HOME')} className="text-[15px] md:text-[20px] font-bold text-gray-400 text-left uppercase hover:text-red-600 transition-all italic">Hype 2025</button>
+               <button onClick={()=>setView('ADMIN')} className="text-[15px] md:text-[20px] font-bold text-gray-400 text-left uppercase hover:text-red-600 transition-all italic">Acceso Dueño</button>
+               <button onClick={()=>setView('TRACKING')} className="text-[15px] md:text-[20px] font-bold text-gray-400 text-left uppercase hover:text-red-600 transition-all italic">Rastreo Internacional</button>
             </div>
           </div>
-          <div className="text-center opacity-20 text-[11px] font-black uppercase tracking-[1.5em] border-t border-gray-200 pt-20">SOPONIFERO STORE © 2025 • HECHOS NO PALABRAS • LIMA, PE</div>
-          <Zap size={700} className="absolute -bottom-60 -right-60 text-black/[0.02]" />
+          <div className="text-center opacity-10 text-[11px] md:text-[16px] font-black uppercase tracking-[3em] border-t border-gray-200 pt-32 mt-60">SOPONIFERO STORE © 2025 • LIMA, PERÚ</div>
+          <Zap size={1400} className="absolute -bottom-[400px] -right-[400px] text-black/[0.01] hidden lg:block" />
         </footer>
 
-        {/* 18. MODAL CARRITO (UX AUTOMÁTICA) */}
+        {/* SIDEBAR BOLSA - FIX CELULAR (FULL WIDTH) */}
         <AnimatePresence>
           {isCartOpen && (
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 bg-black/80 backdrop-blur-3xl z-[3000] flex justify-end">
-              <motion.div initial={{ x: 600 }} animate={{ x: 0 }} exit={{ x: 600 }} className="bg-white w-full max-w-2xl h-full p-20 flex flex-col text-left shadow-3xl italic">
-                <div className="flex justify-between items-center mb-24 font-black uppercase text-6xl tracking-tighter italic"><h2>MI BOLSA</h2><button onClick={() => setIsCartOpen(false)}><X size={48} className="hover:rotate-90 transition-transform duration-500"/></button></div>
-                <div className="flex-1 overflow-y-auto space-y-14 pr-6">
-                  {cart.length === 0 ? <p className="text-gray-200 font-black uppercase text-2xl">Nada en la bolsa, mano.</p> : cart.map((item, i) => (
-                    <div key={i} className="flex gap-10 border-b-2 border-gray-50 pb-12 relative group">
-                      <div className="w-44 h-44 bg-gray-50 rounded-[48px] overflow-hidden flex items-center justify-center p-8 shadow-inner"><img src={item.img} className="w-full h-auto object-contain drop-shadow-3xl" /></div>
-                      <div className="flex flex-col justify-center text-left">
-                        <h4 className="text-[16px] font-black uppercase text-black mb-3">{item.nombre}</h4>
-                        <p className="text-[12px] text-gray-400 font-bold uppercase mb-6">Talla: [ {item.size} ]</p>
-                        <p className="text-[24px] text-red-600 font-black">S/ {item.precio}</p>
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 bg-black/80 backdrop-blur-3xl z-[3000] flex justify-end transform-gpu">
+              <motion.div initial={{ x: "100%" }} animate={{ x: 0 }} exit={{ x: "100%" }} className="bg-white w-full max-w-3xl h-full p-8 md:p-24 flex flex-col text-left shadow-5xl italic will-change-transform">
+                <div className="flex justify-between items-center mb-16 md:mb-32 font-black uppercase text-5xl md:text-9xl tracking-tighter italic"><h2>MI BOLSA</h2><button onClick={() => setIsCartOpen(false)}><X size={48} md:size={100}/></button></div>
+                <div className="flex-1 overflow-y-auto space-y-12 md:space-y-20 pr-4 md:pr-10 custom-scroll">
+                  {cart.length === 0 ? <p className="text-gray-200 font-black uppercase text-3xl md:text-6xl tracking-tighter italic">Nada aquí, mano.</p> : cart.map((item, i) => (
+                    <div key={i} className="flex gap-8 md:gap-20 border-b-4 border-gray-50 pb-12 relative group text-left transform-gpu">
+                      <div className="w-28 md:w-64 h-28 md:h-64 bg-gray-50 rounded-[28px] md:rounded-[72px] overflow-hidden flex items-center justify-center p-6 md:p-14 shadow-inner"><img src={item.img} className="w-full h-auto object-contain drop-shadow-5xl" /></div>
+                      <div className="flex flex-col justify-center">
+                        <h4 className="text-[14px] md:text-[28px] font-black uppercase text-black mb-2 md:mb-4 italic tracking-tight">{item.nombre}</h4>
+                        <p className="text-[11px] md:text-[18px] text-gray-400 font-bold uppercase mb-4 md:mb-12 italic">Size: [ {item.size} ]</p>
+                        <p className="text-[24px] md:text-[50px] text-red-600 font-black italic tracking-tighter leading-none">S/ {item.precio}</p>
                       </div>
-                      <button onClick={()=>setCart(cart.filter((_, idx)=>idx!==i))} className="absolute right-0 top-1/2 -translate-y-1/2 text-gray-200 hover:text-red-600 transition-colors"><Trash2 size={28}/></button>
+                      <button onClick={()=>setCart(cart.filter((_, idx)=>idx!==i))} className="absolute right-0 top-1/2 -translate-y-1/2 text-gray-200 hover:text-red-600 transition-all duration-[0.8s]"><Trash2 size={28} md:size={50}/></button>
                     </div>
                   ))}
                 </div>
                 {cart.length > 0 && (
-                  <div className="pt-20 border-t-2 border-gray-100">
-                    <div className="flex justify-between items-end mb-12 font-black uppercase">
-                       <span className="text-gray-400 text-xl">Subtotal</span>
-                       <span className="text-6xl text-black">S/ {totalCart}</span>
+                  <div className="pt-16 md:pt-32 border-t-4 border-gray-100 italic">
+                    <div className="flex justify-between items-end mb-16 md:mb-24 font-black uppercase">
+                       <span className="text-gray-400 text-2xl md:text-4xl tracking-tighter italic">Subtotal</span>
+                       <span className="text-5xl md:text-[120px] text-black tracking-tighter leading-none italic">S/ {totalCart}</span>
                     </div>
-                    {/* ACCIÓN HACIA EL CHECKOUT */}
-                    <button onClick={() => {setView('CHECKOUT'); setIsCartOpen(false)}} className="w-full bg-red-600 text-white py-10 rounded-full font-black uppercase italic tracking-[0.5em] hover:bg-black transition-all shadow-3xl text-sm">Ir al Checkout Seguro</button>
+                    <button onClick={() => {setView('CHECKOUT'); setIsCartOpen(false)}} className="w-full bg-red-600 text-white py-12 md:py-20 rounded-full font-black uppercase italic tracking-[0.5em] md:tracking-[1em] hover:bg-black transition-all shadow-5xl text-[10px] md:text-sm italic">Ir al Checkout Seguro</button>
                   </div>
                 )}
               </motion.div>
@@ -428,35 +438,37 @@ export default function App() {
           )}
         </AnimatePresence>
 
-        {/* 19. NOTIFICACIÓN VENTA (INGENIERÍA SOCIAL) */}
+        {/* NOTIFICACIÓN VENTA - FIX Z-INDEX (Hardware Accelerated) */}
         <AnimatePresence>{showNotification && (
-          <motion.div initial={{ x: -400, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: -400, opacity: 0 }} className="fixed bottom-12 left-12 bg-white/95 backdrop-blur-3xl border-2 border-gray-100 shadow-3xl p-12 rounded-[56px] flex items-center gap-10 z-[100] italic">
-            <div className="w-24 h-24 bg-red-600 rounded-[28px] flex items-center justify-center text-white font-black text-3xl shadow-3xl shadow-red-600/30">SS</div>
-            <div className="text-left"><p className="text-[16px] font-black uppercase tracking-tighter text-black">Venta Confirmada</p><p className="text-[12px] text-gray-400 font-bold uppercase tracking-widest italic">Un cliente en Los Olivos compró unas Jordan 4</p></div>
+          <motion.div initial={{ x: -600, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: -600, opacity: 0 }} className="fixed bottom-6 md:bottom-12 left-6 md:left-12 bg-white/95 backdrop-blur-5xl border-4 border-gray-100 shadow-5xl p-8 md:p-20 rounded-[40px] md:rounded-[80px] flex items-center gap-8 md:gap-16 z-[100] italic transform-gpu">
+            <div className="w-20 md:w-44 h-20 md:h-44 bg-red-600 rounded-[28px] md:rounded-[56px] flex items-center justify-center text-white font-black text-3xl md:text-7xl shadow-5xl shadow-red-600/30">SS</div>
+            <div className="text-left"><p className="text-[16px] md:text-[32px] font-black uppercase tracking-tighter text-black italic leading-none">Venta Confirmada</p><p className="text-[11px] md:text-[20px] text-gray-400 font-bold uppercase tracking-[0.4em] italic mt-2 md:mt-4">Cliente en Comas compró unas Samba</p></div>
           </motion.div>
         )}</AnimatePresence>
       </main>
 
-      {/* 20. WHATSAPP FLOAT (BOTÓN DE CIERRE) */}
-      <a href="https://wa.me/519XXXXXXXX" target="_blank" className="fixed bottom-12 right-12 z-[5000] bg-[#25D366] text-white p-10 rounded-full shadow-[0_30px_70px_rgba(37,211,102,0.4)] hover:scale-110 transition-transform duration-500 flex items-center justify-center shadow-inner"><MessageCircle size={48} fill="white" /></a>
+      {/* WHATSAPP FLOAT - FIX Z-INDEX (Hardware Accelerated) */}
+      <a href="https://wa.me/519XXXXXXXX" target="_blank" className="fixed bottom-6 md:bottom-12 right-6 md:right-12 z-[5000] bg-[#25D366] text-white p-8 md:p-16 rounded-full shadow-4xl hover:scale-110 transition-transform duration-[0.8s] flex items-center justify-center shadow-inner group transform-gpu">
+        <MessageCircle size={40} md:size={100} fill="white" className="group-hover:rotate-[20deg] transition-transform duration-700" />
+      </a>
     </div>
   );
 }
 
-// 21. PRODUCT CARD COMPONENT (DISEÑO BOUTIQUE)
+// COMPONENTE TARJETA DE PRODUCTO (FIX RESPONSIVE Y PERFORMANCE)
 function ProductCard({ prod, onClick }) {
   return (
-    <motion.div whileHover={{ scale: 1.05 }} onClick={onClick} className="group cursor-pointer flex flex-col text-center italic">
-      <div className="relative aspect-[4/5] bg-gray-50 rounded-[72px] overflow-hidden flex items-center justify-center p-20 border border-gray-100 transition-all duration-1000 group-hover:bg-white group-hover:shadow-3xl shadow-inner">
-        <div className="absolute top-14 left-14 z-10 bg-black text-white text-[10px] font-black px-8 py-3 rounded-full tracking-widest uppercase shadow-2xl group-hover:bg-red-600 transition-colors">{prod.tag}</div>
-        <img src={prod.img} className="w-full h-auto group-hover:scale-110 group-hover:-rotate-6 transition-transform duration-[1800ms] drop-shadow-3xl" alt={prod.nombre} />
+    <motion.div whileHover={{ y: -15 }} onClick={onClick} className="group cursor-pointer flex flex-col text-center italic transform-gpu">
+      <div className="relative aspect-[4/5] bg-gray-50 rounded-[48px] md:rounded-[100px] overflow-hidden flex items-center justify-center p-12 md:p-24 border-2 border-gray-50 transition-all duration-[1s] group-hover:bg-white group-hover:shadow-5xl shadow-inner will-change-transform">
+        <div className="absolute top-10 md:top-24 left-10 md:left-24 z-10 bg-black text-white text-[9px] md:text-[14px] font-black px-8 py-3 rounded-full tracking-[0.4em] uppercase italic shadow-4xl group-hover:bg-red-600 transition-all duration-[1s]">{prod.tag}</div>
+        <img src={prod.img} className="w-full h-auto group-hover:scale-110 group-hover:-rotate-12 transition-transform duration-[2s] drop-shadow-5xl will-change-transform" alt={prod.nombre} />
       </div>
-      <div className="mt-12 text-center px-8">
-        <h4 className="text-[16px] font-black uppercase italic text-black tracking-tight group-hover:text-red-600 transition-colors truncate">{prod.nombre}</h4>
-        <div className="flex items-center justify-center gap-6 mt-4">
-           <div className="h-[2px] w-8 bg-red-600/20 group-hover:w-14 transition-all duration-1000"/>
-           <p className="text-red-600 font-black text-3xl leading-none">S/ {prod.precio}</p>
-           <div className="h-[2px] w-8 bg-red-600/20 group-hover:w-14 transition-all duration-1000"/>
+      <div className="mt-10 md:mt-20 text-center px-8 md:px-16">
+        <h4 className="text-[16px] md:text-[32px] font-black uppercase italic text-black tracking-tight group-hover:text-red-600 transition-all duration-[0.8s] truncate italic">{prod.nombre}</h4>
+        <div className="flex items-center justify-center gap-8 md:gap-14 mt-4 md:mt-10">
+           <div className="h-[3px] w-10 bg-red-600/20 group-hover:w-20 transition-all duration-[1.2s]"/>
+           <p className="text-red-600 font-black italic text-3xl md:text-8xl leading-none tracking-tighter italic">S/ {prod.precio}</p>
+           <div className="h-[3px] w-10 bg-red-600/20 group-hover:w-10 transition-all duration-[1.2s]"/>
         </div>
       </div>
     </motion.div>
