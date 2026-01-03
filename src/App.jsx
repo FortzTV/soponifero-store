@@ -107,7 +107,7 @@ export default function App() {
         <div className="max-w-7xl mx-auto px-8 py-5 flex justify-between items-center relative">
           
           <div className="flex flex-col items-start cursor-pointer group" onClick={() => setView('HOME')}>
-            <img src="/logo-noir.png" alt="NOIR LOGO" className="h-12 w-auto object-contain transition-transform group-hover:scale-105" />
+            <img src="/NOIR1.png" alt="NOIR LOGO" className="h-12 w-auto object-contain transition-transform group-hover:scale-105" />
             <div className="flex gap-3 items-center mt-1">
               <span className="text-[8px] tracking-[0.4em] font-bold text-gray-300 uppercase italic">ノワール HUB</span>
               <div className="h-[1px] w-8 bg-gray-100"></div>
