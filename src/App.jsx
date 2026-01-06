@@ -177,8 +177,8 @@ export default function App() {
                 <video autoPlay loop muted playsInline className="video-bg"><source src="/mp1.mp4" type="video/mp4" /></video>
                 <div className="relative z-10 w-full px-12 flex justify-between items-end text-white max-w-[1800px] mx-auto">
                     <div>
-                        <h2 className="text-xs font-bold uppercase tracking-[0.5em] mb-4 text-red-500">NEW ARRIVALS</h2>
-                        <h1 className="text-7xl lg:text-9xl font-black uppercase tracking-tighter leading-none shadow-black drop-shadow-lg">TOKYO<br/>HUB</h1>
+                        <h2 className="text-xs font-bold uppercase tracking-[0.5em] mb-4 text-red-500">NUEVOS MODELOS</h2>
+                        <h1 className="text-7xl lg:text-9xl font-black uppercase tracking-tighter leading-none shadow-black drop-shadow-lg">NOIR<br/>LIMA</h1>
                     </div>
                     <button onClick={() => goToShop('ALL')} className="btn-glass mb-4">VER TIENDA</button>
                 </div>
@@ -312,9 +312,9 @@ export default function App() {
       <footer className="bg-black text-white py-40 border-t border-gray-900">
         <div className="max-w-[1800px] mx-auto px-12 grid grid-cols-1 md:grid-cols-4 gap-20 uppercase">
             <div>
-                <h4 className="text-[10px] font-bold tracking-widest mb-10 text-gray-500">Newsletter</h4>
+                <h4 className="text-[10px] font-bold tracking-widest mb-10 text-gray-500">NOVEDADES</h4>
                 <div className="flex border-b border-gray-700 pb-4">
-                    <input type="email" placeholder="EMAIL ADDRESS" className="flex-1 bg-transparent outline-none text-[10px] text-white placeholder:text-gray-700" />
+                    <input type="email" placeholder="CORREO ELECTRONICO" className="flex-1 bg-transparent outline-none text-[10px] text-white placeholder:text-gray-700" />
                     <button className="text-[10px] font-bold">→</button>
                 </div>
             </div>
